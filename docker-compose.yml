@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  ratesdb:
+    build:
+      context: .
+      target: db
+    environment:
+      POSTGRES_PASSWORD: ratestask
+    ports:
+      - "5432:5432"
+    networks:
+      - ratesnetwork
+
+  ratesapp:
+    build:
+      context: .
+      target: app
+    environment:
+      POSTGRES_DB_HOST: ratesdb
+      POSTGRES_DB_NAME: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: ratestask
+    ports:
+      - "5000:5000"
+    depends_on:
+      - ratesdb
+    networks:
+      - ratesnetwork
+
+networks:
+  ratesnetwork:
+    driver: bridge
